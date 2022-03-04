@@ -1,13 +1,14 @@
-package prompt
+package powerline
 
 import (
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/liamg/bearings/ansi"
 )
 
-type powerlineWriter struct {
+type Writer struct {
 	inner  io.Writer
 	escape ansi.EscapeType
 }
@@ -58,26 +59,37 @@ func init() {
 	}
 }
 
-func NewPowerlineWriter(w io.Writer, escape ansi.EscapeType) *powerlineWriter {
-	return &powerlineWriter{
+func NewWriter(w io.Writer, escape ansi.EscapeType) *Writer {
+	return &Writer{
 		inner:  w,
 		escape: escape,
 	}
 }
 
-func (p *powerlineWriter) write(s string) {
+func (p *Writer) write(s string) {
 	_, _ = p.inner.Write([]byte(s))
 }
 
-func (p *powerlineWriter) Reset() {
-	p.write(ansi.Escape("\x1b[0m", p.escape))
+func (p *Writer) Reset(str string) {
+	p.WriteAnsi("\x1b[0m")
+	p.write(str)
 }
 
-func (p *powerlineWriter) Printf(style ansi.Style, format string, args ...interface{}) {
+func (p *Writer) WriteAnsi(str string) {
+	p.write(ansi.Escape(str, p.escape))
+}
+
+func (p *Writer) PrintfWithLabel(style ansi.Style, label, format string, args ...interface{}) {
+	input := fmt.Sprintf(format, args...)
+	content := strings.Replace(label, "%s", input, 1)
+	p.Printf(style, "%s", content)
+}
+
+func (p *Writer) Printf(style ansi.Style, format string, args ...interface{}) {
 	input := fmt.Sprintf(format, args...)
 	p.write(style.Ansi(p.escape))
 	var inverted bool
-	for _, r := range []rune(input) {
+	for _, r := range input {
 		if p.isPowerlineRune(r) != inverted {
 			inverted = !inverted
 			if inverted {
@@ -90,7 +102,7 @@ func (p *powerlineWriter) Printf(style ansi.Style, format string, args ...interf
 	}
 }
 
-func (p *powerlineWriter) isPowerlineRune(r rune) bool {
+func (p *Writer) isPowerlineRune(r rune) bool {
 	_, ok := powerlineRuneMap[r]
 	return ok
 }

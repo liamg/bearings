@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/liamg/bearings/config"
+	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
 )
 
@@ -46,12 +47,17 @@ func init() {
 	})
 }
 
-func (e *gitModule) Render() string {
+func (e *gitModule) Render(w *powerline.Writer) {
+	baseStyle := e.mc.Style(e.gc)
 	path, err := e.findGitPath(e.state.WorkingDir, 0)
 	if err != nil {
-		return ""
+		return
 	}
-	return e.gitInfo(path)
+	w.Printf(
+		baseStyle,
+		"%s",
+		e.gitInfo(path),
+	)
 }
 
 func (e *gitModule) findGitPath(start string, count int) (string, error) {

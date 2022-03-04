@@ -17,11 +17,39 @@ You can download the latest binaries [here](https://github.com/liamg/bearings/re
 
 ## Configuration
 
+### Automatic
+
+You can attempt to automatically configure your shell by running `bearings install`. This will modify your shell configuration files in order to set bearings as your PS1 generator. For advanced configurations, you should use the manual methods below.
+
 ### ZSH
+
+```zsh
+#bearings-auto:start
+function configure_bearings() {
+    PROMPT="$()"
+}
+[ ! "$TERM" = "linux" ] && precmd_functions+=(configure_bearings)
+#bearings-auto:end
+```
 
 ### Bash
 
+```bash
+#bearings-auto:start
+bearings_prompt() { export PROMPT=$(bearings prompt -e $?); }
+[[ ! "$TERM" = "linux" ]] && export PROMPT_COMMAND=bearings_prompt
+#bearings-auto:end
+```
+
 ### Fish
+
+```fish
+#bearings-auto:start
+function fish_prompt
+    source bearings prompt -e $status
+end
+#bearings-auto:end
+```
 
 ## Customisation
 
@@ -31,10 +59,17 @@ You can find example configurations with screenshots for each in the [examples d
 
 ## Available Modules
 
+### Working Directory (`workdir`)
+### Exit Code (`exitcode`)
+### Git (`git`)
+### Custom (`custom`)
+
 ## TODO
 
-- [ ] Shell installer via `--install`
 - [ ] custom module
 - [ ] optionally show tick on exitcode
 - [ ] customise icons on exitcode
 - [ ] customise depth of workdir
+- [ ] add examples and screenshots
+- [ ] add module documentation
+

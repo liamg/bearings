@@ -119,9 +119,7 @@ func ParseColourString(colour string) Colour {
 }
 
 func hexToANSI(input string) Colour {
-	if strings.HasPrefix(input, "#") {
-		input = input[1:]
-	}
+	input = strings.TrimPrefix(input, "#")
 	if len(input) != 6 {
 		return DefaultFg
 	}

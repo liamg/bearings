@@ -1,7 +1,10 @@
 package state
 
+import "github.com/liamg/bearings/ansi"
+
 type State struct {
-	LastExitCode int
-	WorkingDir   string
-	HomeDir      string
+	AnsiEscapeType ansi.EscapeType
+	LastExitCode   int
+	WorkingDir     string
+	HomeDir        string
 }

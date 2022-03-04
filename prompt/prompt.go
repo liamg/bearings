@@ -1,6 +1,7 @@
 package prompt
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -8,22 +9,13 @@ import (
 	"strings"
 
 	"github.com/liamg/bearings/ansi"
-
 	"github.com/liamg/bearings/config"
 	"github.com/liamg/bearings/modules"
+	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
 )
 
 func Do(w io.Writer, lastExit int) error {
-
-	var ansiEscape ansi.EscapeType
-
-	switch filepath.Base(os.Getenv("SHELL")) {
-	case "zsh":
-		ansiEscape = ansi.EscapeZSH
-	}
-
-	writer := NewPowerlineWriter(w, ansiEscape)
 
 	wd, _ := os.Getwd()
 	home, _ := os.UserHomeDir()
@@ -32,12 +24,18 @@ func Do(w io.Writer, lastExit int) error {
 	if err != nil {
 		return err
 	}
-
 	s := state.State{
 		LastExitCode: lastExit,
 		WorkingDir:   wd,
 		HomeDir:      home,
 	}
+
+	switch filepath.Base(os.Getenv("SHELL")) {
+	case "zsh":
+		s.AnsiEscapeType = ansi.EscapeZSH
+	}
+
+	writer := powerline.NewWriter(w, s.AnsiEscapeType)
 
 	style := ansi.Style{
 		Foreground: ansi.ParseColourString(conf.Fg).Fg(),
@@ -49,30 +47,30 @@ func Do(w io.Writer, lastExit int) error {
 		Background: style.Background,
 	}
 
-	writer.Reset()
+	writer.Reset("")
 	writer.Printf(style, strings.Repeat("\n", conf.LinesAbove)+" ")
 
 	var lastSep string
 	for _, modConf := range conf.Modules {
 
+		buffer := bytes.NewBuffer([]byte{})
+		modWriter := powerline.NewWriter(buffer, s.AnsiEscapeType)
+
 		mod, mergedConfig, err := modules.Load(s, conf, modConf)
 		if err != nil {
 			return err
 		}
-		content := mod.Render()
-		if content == "" {
+		mod.Render(modWriter)
+		if buffer.Len() == 0 {
 			continue
 		}
-		content = strings.Replace(mergedConfig.Label(), "%s", content, 1)
 		modStyle := mergedConfig.Style(conf)
 		writer.Printf(sepStyle.WithSmartInvert(), "%s", lastSep)
-		writer.Printf(modStyle.WithoutSmartInvert(), "%s", content)
-
+		writer.PrintfWithLabel(modStyle, mergedConfig.Label(), "%s", buffer.String())
 		lastSep = fmt.Sprintf(" %s ", mergedConfig.String("separator", conf.Divider))
 	}
 
 	writer.Printf(style.WithSmartInvert(), " %s", conf.End)
-	writer.Reset()
-	writer.write(" ")
+	writer.Reset(" ")
 	return nil
 }

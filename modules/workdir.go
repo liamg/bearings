@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/liamg/bearings/config"
+	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
 )
 
@@ -26,10 +27,15 @@ func init() {
 	})
 }
 
-func (e *workDirModule) Render() string {
+func (e *workDirModule) Render(w *powerline.Writer) {
+	baseStyle := e.mc.Style(e.gc)
 	clean := strings.TrimPrefix(e.state.WorkingDir, e.state.HomeDir)
 	if clean != e.state.WorkingDir {
 		clean = filepath.Join("~", clean)
 	}
-	return clean
+	w.Printf(
+		baseStyle,
+		"%s",
+		clean,
+	)
 }
