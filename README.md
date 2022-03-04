@@ -67,9 +67,8 @@ You can find example configurations with screenshots for each in the [examples d
 ## TODO
 
 - [ ] custom module
-- [ ] optionally show tick on exitcode
-- [ ] customise icons on exitcode
 - [ ] customise depth of workdir
 - [ ] add examples and screenshots
 - [ ] add module documentation
-
+- [ ] test bash
+- [ ] test fish
