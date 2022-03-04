@@ -67,7 +67,7 @@ func Do(w io.Writer, lastExit int) error {
 		modStyle := mergedConfig.Style(conf)
 		writer.Printf(sepStyle.WithSmartInvert(), "%s", lastSep)
 		writer.PrintfWithLabel(modStyle, mergedConfig.Label(), "%s", buffer.String())
-		lastSep = fmt.Sprintf(" %s ", mergedConfig.String("separator", conf.Divider))
+		lastSep = fmt.Sprintf(" %s ", mergedConfig.String("divider", conf.Divider))
 	}
 
 	writer.Printf(style.WithSmartInvert(), " %s", conf.End)
