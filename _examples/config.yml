@@ -1,0 +1,5 @@
+start: "<"
+end: ">"
+modules:
+  - type: exitcode
+  - type: workdir
