@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"github.com/liamg/bearings/ansi"
 	"github.com/liamg/bearings/config"
 	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
@@ -27,6 +28,8 @@ func init() {
 	}, config.ModuleConfig{
 		"label":          "%s",
 		"show_success":   false,
+		"success_colour": "green",
+		"failure_colour": "red",
 		"success_output": iconExitSuccess,
 		"failure_output": iconExitFailure,
 	})
@@ -35,6 +38,7 @@ func init() {
 func (e *exitCodeModule) Render(w *powerline.Writer) {
 	baseStyle := e.mc.Style(e.gc)
 	if e.state.LastExitCode > 0 {
+		baseStyle.Foreground = ansi.ParseColourString(e.mc.String("failure_colour", "red")).Fg()
 		w.Printf(
 			baseStyle,
 			"%s %d",
@@ -42,6 +46,7 @@ func (e *exitCodeModule) Render(w *powerline.Writer) {
 			e.state.LastExitCode,
 		)
 	} else if e.mc.Bool("show_sucess", false) {
+		baseStyle.Foreground = ansi.ParseColourString(e.mc.String("success_colour", "green")).Fg()
 		w.Printf(
 			baseStyle,
 			"%s",
