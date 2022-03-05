@@ -26,7 +26,7 @@ You can attempt to automatically configure your shell by running `bearings insta
 ```zsh
 #bearings-auto:start
 function configure_bearings() {
-    PROMPT="$()"
+    PROMPT="$(bearings prompt -e $?)"
 }
 [ ! "$TERM" = "linux" ] && precmd_functions+=(configure_bearings)
 #bearings-auto:end
