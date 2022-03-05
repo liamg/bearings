@@ -61,16 +61,15 @@ func Do(w io.Writer, lastExit int) error {
 			continue
 		}
 		modStyle := mergedConfig.Style(conf)
-		sepStyle := modStyle
-		sepStyle.From = lastStyle
-		writer.Printf(sepStyle.WithSmartInvert(), "%s", lastSep)
-		lastStyle = modWriter.LastStyle()
+		modStyle.From = lastStyle
+		writer.Printf(modStyle.WithSmartInvert(), "%s", lastSep)
 		if first := modWriter.FirstStyle(); first != nil {
 			writer.PrintRaw(first.Ansi(s.AnsiEscapeType))
 		}
 		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
-		writer.PrintRaw(fmt.Sprintf(" %s ", content))
 		lastSep = mergedConfig.String("divider", conf.Divider)
+		lastStyle = modWriter.LastStyle()
+		writer.PrintRaw(fmt.Sprintf(" %s ", content))
 	}
 	if lastStyle != nil {
 		style = *lastStyle
