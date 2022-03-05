@@ -41,6 +41,7 @@ func (e *exitCodeModule) Render(w *powerline.Writer) {
 		baseStyle.Foreground = ansi.ParseColourString(e.mc.String("failure_colour", "red")).Fg()
 		w.Printf(
 			baseStyle,
+			true,
 			"%s %d",
 			e.mc.String("failure_output", iconExitFailure),
 			e.state.LastExitCode,
@@ -49,6 +50,7 @@ func (e *exitCodeModule) Render(w *powerline.Writer) {
 		baseStyle.Foreground = ansi.ParseColourString(e.mc.String("success_colour", "green")).Fg()
 		w.Printf(
 			baseStyle,
+			true,
 			"%s",
 			e.mc.String("success_output", iconExitSuccess),
 		)

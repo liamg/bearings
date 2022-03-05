@@ -3,7 +3,6 @@ package powerline
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/liamg/bearings/ansi"
 )
@@ -76,17 +75,14 @@ func (p *Writer) Reset(str string) {
 }
 
 func (p *Writer) WriteAnsi(str string) {
-	p.write(ansi.Escape(str, p.escape))
+	p.write(ansi.EscapeCode(str, p.escape))
 }
 
-func (p *Writer) PrintfWithLabel(style ansi.Style, label, format string, args ...interface{}) {
+func (p *Writer) Printf(style ansi.Style, shouldEscape bool, format string, args ...interface{}) {
 	input := fmt.Sprintf(format, args...)
-	content := strings.Replace(label, "%s", input, 1)
-	p.Printf(style, "%s", content)
-}
-
-func (p *Writer) Printf(style ansi.Style, format string, args ...interface{}) {
-	input := fmt.Sprintf(format, args...)
+	if shouldEscape {
+		input = ansi.EscapeString(input, p.escape)
+	}
 	p.write(style.Ansi(p.escape))
 	var inverted bool
 	for _, r := range input {

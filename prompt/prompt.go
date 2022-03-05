@@ -2,7 +2,6 @@ package prompt
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -42,15 +41,11 @@ func Do(w io.Writer, lastExit int) error {
 		Background: ansi.ParseColourString(conf.Bg).Bg(),
 	}
 
-	sepStyle := ansi.Style{
-		Foreground: ansi.ParseColourString(conf.DividerFg).Fg(),
-		Background: style.Background,
-	}
-
 	writer.Reset("")
-	writer.Printf(style, strings.Repeat("\n", conf.LinesAbove)+" ")
+	writer.Printf(style, false, strings.Repeat("\n", conf.LinesAbove))
 
 	var lastSep string
+	var lastStyle *ansi.Style
 	for _, modConf := range conf.Modules {
 
 		buffer := bytes.NewBuffer([]byte{})
@@ -65,12 +60,19 @@ func Do(w io.Writer, lastExit int) error {
 			continue
 		}
 		modStyle := mergedConfig.Style(conf)
-		writer.Printf(sepStyle.WithSmartInvert(), "%s", lastSep)
-		writer.PrintfWithLabel(modStyle, mergedConfig.Label(), "%s", buffer.String())
-		lastSep = fmt.Sprintf(" %s ", mergedConfig.String("divider", conf.Divider))
+		sepStyle := modStyle
+		sepStyle.From = lastStyle
+		writer.Printf(sepStyle.WithSmartInvert(), true, "%s", lastSep)
+		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
+		writer.Printf(modStyle, false, " %s ", content)
+		lastSep = mergedConfig.String("divider", conf.Divider)
+		lastStyle = &modStyle
 	}
 
-	writer.Printf(style.WithSmartInvert(), " %s", conf.End)
+	if lastStyle != nil {
+		style = *lastStyle
+	}
+	writer.Printf(style.WithSmartInvert(), true, "%s", conf.End)
 	writer.Reset(" ")
 	return nil
 }

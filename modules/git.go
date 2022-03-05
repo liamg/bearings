@@ -55,6 +55,7 @@ func (e *gitModule) Render(w *powerline.Writer) {
 	}
 	w.Printf(
 		baseStyle,
+		true,
 		"%s",
 		e.gitInfo(path),
 	)
