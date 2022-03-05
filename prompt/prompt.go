@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -42,7 +43,7 @@ func Do(w io.Writer, lastExit int) error {
 	}
 
 	writer.Reset("")
-	writer.Printf(style, false, strings.Repeat("\n", conf.LinesAbove))
+	writer.Printf(style, strings.Repeat("\n", conf.LinesAbove))
 
 	var lastSep string
 	var lastStyle *ansi.Style
@@ -62,17 +63,19 @@ func Do(w io.Writer, lastExit int) error {
 		modStyle := mergedConfig.Style(conf)
 		sepStyle := modStyle
 		sepStyle.From = lastStyle
-		writer.Printf(sepStyle.WithSmartInvert(), true, "%s", lastSep)
+		writer.Printf(sepStyle.WithSmartInvert(), "%s", lastSep)
+		lastStyle = modWriter.LastStyle()
+		if first := modWriter.FirstStyle(); first != nil {
+			writer.PrintRaw(first.Ansi(s.AnsiEscapeType))
+		}
 		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
-		writer.Printf(modStyle, false, " %s ", content)
+		writer.PrintRaw(fmt.Sprintf(" %s ", content))
 		lastSep = mergedConfig.String("divider", conf.Divider)
-		lastStyle = &modStyle
 	}
-
 	if lastStyle != nil {
 		style = *lastStyle
 	}
-	writer.Printf(style.WithSmartInvert(), true, "%s", conf.End)
+	writer.Printf(style.WithSmartInvert(), "%s", conf.End)
 	writer.Reset(" ")
 	return nil
 }

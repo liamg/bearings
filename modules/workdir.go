@@ -35,7 +35,6 @@ func (e *workDirModule) Render(w *powerline.Writer) {
 	}
 	w.Printf(
 		baseStyle,
-		true,
 		"%s",
 		clean,
 	)

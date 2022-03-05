@@ -8,8 +8,10 @@ import (
 )
 
 type Writer struct {
-	inner  io.Writer
-	escape ansi.EscapeType
+	inner      io.Writer
+	escape     ansi.EscapeType
+	firstStyle *ansi.Style
+	lastStyle  *ansi.Style
 }
 
 // Powerline runes are at 0xe0b0 -> 0xe0d4
@@ -78,11 +80,28 @@ func (p *Writer) WriteAnsi(str string) {
 	p.write(ansi.EscapeCode(str, p.escape))
 }
 
-func (p *Writer) Printf(style ansi.Style, shouldEscape bool, format string, args ...interface{}) {
+func (p *Writer) FirstStyle() *ansi.Style {
+	return p.firstStyle
+}
+
+func (p *Writer) LastStyle() *ansi.Style {
+	return p.lastStyle
+}
+
+func (p *Writer) PrintRaw(s string) {
+	p.write(s)
+}
+
+func (p *Writer) Printf(style ansi.Style, format string, args ...interface{}) {
 	input := fmt.Sprintf(format, args...)
-	if shouldEscape {
-		input = ansi.EscapeString(input, p.escape)
+	input = ansi.EscapeString(input, p.escape)
+	if input == "" {
+		return
 	}
+	if p.firstStyle == nil {
+		p.firstStyle = &style
+	}
+	p.lastStyle = &style
 	p.write(style.Ansi(p.escape))
 	var inverted bool
 	for _, r := range input {

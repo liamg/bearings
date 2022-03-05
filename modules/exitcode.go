@@ -28,8 +28,10 @@ func init() {
 	}, config.ModuleConfig{
 		"label":          "%s",
 		"show_success":   false,
-		"success_colour": "green",
-		"failure_colour": "red",
+		"success_bg":     "",
+		"failure_bg":     "",
+		"success_fg":     "green",
+		"failure_fg":     "red",
 		"success_output": iconExitSuccess,
 		"failure_output": iconExitFailure,
 	})
@@ -38,19 +40,39 @@ func init() {
 func (e *exitCodeModule) Render(w *powerline.Writer) {
 	baseStyle := e.mc.Style(e.gc)
 	if e.state.LastExitCode > 0 {
-		baseStyle.Foreground = ansi.ParseColourString(e.mc.String("failure_colour", "red")).Fg()
+		baseStyle.Foreground = ansi.ParseColourString(
+			e.mc.String(
+				"failure_fg",
+				"red",
+			),
+		).Fg()
+		baseStyle.Background = ansi.ParseColourString(
+			e.mc.String(
+				"failure_bg",
+				e.gc.Bg,
+			),
+		).Bg()
 		w.Printf(
 			baseStyle,
-			true,
 			"%s %d",
 			e.mc.String("failure_output", iconExitFailure),
 			e.state.LastExitCode,
 		)
 	} else if e.mc.Bool("show_success", false) {
-		baseStyle.Foreground = ansi.ParseColourString(e.mc.String("success_colour", "green")).Fg()
+		baseStyle.Foreground = ansi.ParseColourString(
+			e.mc.String(
+				"success_fg",
+				"green",
+			),
+		).Fg()
+		baseStyle.Background = ansi.ParseColourString(
+			e.mc.String(
+				"success_bg",
+				e.gc.Bg,
+			),
+		).Bg()
 		w.Printf(
 			baseStyle,
-			true,
 			"%s",
 			e.mc.String("success_output", iconExitSuccess),
 		)
