@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/liamg/bearings/ansi"
@@ -17,23 +15,12 @@ import (
 
 func Do(w io.Writer, lastExit int) error {
 
-	wd, _ := os.Getwd()
-	home, _ := os.UserHomeDir()
-
 	conf, err := config.Load()
 	if err != nil {
 		return err
 	}
-	s := state.State{
-		LastExitCode: lastExit,
-		WorkingDir:   wd,
-		HomeDir:      home,
-	}
 
-	switch filepath.Base(os.Getenv("SHELL")) {
-	case "zsh":
-		s.AnsiEscapeType = ansi.EscapeZSH
-	}
+	s := state.Derive(lastExit)
 
 	writer := powerline.NewWriter(w, s.AnsiEscapeType)
 

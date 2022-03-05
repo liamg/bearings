@@ -66,7 +66,6 @@ You can find example configurations with screenshots for each in the [examples d
 
 ## TODO
 
-- [ ] custom module
 - [ ] customise depth of workdir
 - [ ] add examples and screenshots
 - [ ] add module documentation
