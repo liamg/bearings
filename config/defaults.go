@@ -8,8 +8,26 @@ var DefaultConfig = Config{
 	LinesAbove: 1,
 	Padding:    1,
 	Modules: []ModuleConfig{
-		{"type": "exitcode"},
-		{"type": "cwd"},
-		{"type": "git"},
+		{
+			"type":           "exitcode",
+			"show_success":   true,
+			"success_output": "",
+			"success_fg":     "#ffffff",
+			"success_bg":     "#000000",
+			"failure_fg":     "#ffffff",
+			"failure_bg":     "#bb4444",
+		},
+		{
+			"type":      "cwd",
+			"label":     " %s",
+			"max_depth": 3,
+			"fg":        "#aaaaaa",
+			"bg":        "#334488",
+		},
+		{
+			"type": "git",
+			"fg":   "#777777",
+			"bg":   "#393939",
+		},
 	},
 }
