@@ -12,7 +12,7 @@ modules:
   success_bg: "#db6410"
   failure_fg: "#ffffff"
   failure_bg: "#bb4444"
-- type: workdir
+- type: cwd
   label: " %s"
   fg: "#aaaaaa"
   bg: "#292929"

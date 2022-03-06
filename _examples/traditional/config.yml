@@ -9,4 +9,4 @@ modules:
 - type: hostname
 - type: text
   text: ":"
-- type: workdir
+- type: cwd

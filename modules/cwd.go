@@ -16,14 +16,15 @@ type workDirModule struct {
 }
 
 func init() {
-	register("workdir", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
+	register("cwd", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
 		return &workDirModule{
 			state: state,
 			mc:    mc,
 			gc:    gc,
 		}, nil
 	}, config.ModuleConfig{
-		"label": "%s",
+		"label":     "%s",
+		"max_depth": 0,
 	})
 }
 
@@ -32,6 +33,12 @@ func (e *workDirModule) Render(w *powerline.Writer) {
 	clean := strings.TrimPrefix(e.state.WorkingDir, e.state.HomeDir)
 	if clean != e.state.WorkingDir {
 		clean = filepath.Join("~", clean)
+	}
+	if max := e.mc.Int("max_depth", 0); max > 0 {
+		parts := strings.Split(clean, string(filepath.Separator))
+		if len(parts) > max {
+			clean = filepath.Join(append([]string{"..."}, parts[len(parts)-max:]...)...)
+		}
 	}
 	w.Printf(
 		baseStyle,
