@@ -1,4 +1,4 @@
-# bearings
+# :compass: bearings
 
 A fast, clean, super-customisable shell prompt.
 
