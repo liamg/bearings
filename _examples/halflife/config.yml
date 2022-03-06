@@ -1,0 +1,20 @@
+padding: 1
+end: 
+divider: 
+fg: "#d0d0d0"
+bg: "#292929"
+lines_above: 1
+modules:
+- type: exitcode
+  show_success: true
+  success_output: ﬦ
+  success_fg: "#ffffff"
+  success_bg: "#db6410"
+  failure_fg: "#ffffff"
+  failure_bg: "#bb4444"
+- type: workdir
+  fg: "#aaaaaa"
+  bg: "#292929"
+- type: git
+  fg: "#fb7e14"
+  bg: "#393939"
