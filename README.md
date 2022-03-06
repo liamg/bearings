@@ -26,7 +26,7 @@ You can attempt to automatically configure your shell by running `bearings insta
 ```zsh
 #bearings-auto:start
 function configure_bearings() {
-    PROMPT="$(bearings prompt -e $?)"
+    PROMPT="$(bearings prompt -s zsh -e $?)"
 }
 [ ! "$TERM" = "linux" ] && precmd_functions+=(configure_bearings)
 #bearings-auto:end
@@ -36,7 +36,7 @@ function configure_bearings() {
 
 ```bash
 #bearings-auto:start
-bearings_prompt() { export PROMPT=$(bearings prompt -e $?); }
+bearings_prompt() { export PS1=$(bearings prompt -s bash -e $?); }
 [[ ! "$TERM" = "linux" ]] && export PROMPT_COMMAND=bearings_prompt
 #bearings-auto:end
 ```
@@ -46,7 +46,7 @@ bearings_prompt() { export PROMPT=$(bearings prompt -e $?); }
 ```fish
 #bearings-auto:start
 function fish_prompt
-    source bearings prompt -e $status
+    bearings prompt -s fish -e $status
 end
 #bearings-auto:end
 ```
