@@ -56,8 +56,9 @@ func Do(w io.Writer, lastExit int, forceShell string) error {
 		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
 		lastSep = mergedConfig.String("divider", conf.Divider)
 		lastStyle = modWriter.LastStyle()
-		padding := strings.Repeat(" ", mergedConfig.Int("padding", conf.Padding))
-		writer.PrintRaw(fmt.Sprintf("%s%s%s", padding, content, padding))
+		paddingBefore := strings.Repeat(" ", mergedConfig.Int("padding_before", conf.Padding))
+		paddingAfter := strings.Repeat(" ", mergedConfig.Int("padding_after", conf.Padding))
+		writer.PrintRaw(fmt.Sprintf("%s%s%s", paddingBefore, content, paddingAfter))
 	}
 	if lastStyle != nil {
 		style = *lastStyle
