@@ -7,7 +7,7 @@ A fast, clean, super-customisable shell prompt.
 - Simple configuration with YAML - works out of the box with a nice default configuration too. 
 - Smart-colouring handles powerline character colour inverting intelligently.
 
-## Gallery
+## Examples Gallery
 
 <table>
     <tr><td align="center"><img src="_examples/default/screenshot.png" /></td><td align="center"><a href="_examples/default/config.yml">Default</a></td></tr>
