@@ -13,16 +13,16 @@ import (
 	"github.com/liamg/bearings/state"
 )
 
-func Do(w io.Writer, lastExit int) error {
+func Do(w io.Writer, lastExit int, forceShell string) error {
 
 	conf, err := config.Load()
 	if err != nil {
 		return err
 	}
 
-	s := state.Derive(lastExit)
+	s := state.Derive(lastExit, forceShell)
 
-	writer := powerline.NewWriter(w, s.AnsiEscapeType)
+	writer := powerline.NewWriter(w, s.Shell)
 
 	style := ansi.Style{
 		Foreground: ansi.ParseColourString(conf.Fg).Fg(),
@@ -37,7 +37,7 @@ func Do(w io.Writer, lastExit int) error {
 	for _, modConf := range conf.Modules {
 
 		buffer := bytes.NewBuffer([]byte{})
-		modWriter := powerline.NewWriter(buffer, s.AnsiEscapeType)
+		modWriter := powerline.NewWriter(buffer, s.Shell)
 
 		mod, mergedConfig, err := modules.Load(s, conf, modConf)
 		if err != nil {
@@ -51,7 +51,7 @@ func Do(w io.Writer, lastExit int) error {
 		modStyle.From = lastStyle
 		writer.Printf(modStyle.WithSmartInvert(), "%s", lastSep)
 		if first := modWriter.FirstStyle(); first != nil {
-			writer.PrintRaw(first.Ansi(s.AnsiEscapeType))
+			writer.PrintRaw(first.Ansi(s.Shell))
 		}
 		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
 		lastSep = mergedConfig.String("divider", conf.Divider)
@@ -63,5 +63,6 @@ func Do(w io.Writer, lastExit int) error {
 	}
 	writer.Printf(style.WithSmartInvert(), "%s", conf.End)
 	writer.Reset(" ")
+	writer.WriteAnsi("\x1b[0K")
 	return nil
 }

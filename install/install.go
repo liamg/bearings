@@ -3,26 +3,24 @@ package install
 import (
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
+
+	"github.com/liamg/bearings/state"
 )
 
-func Do() error {
-
-	shell := filepath.Base(os.Getenv("SHELL"))
+func Do(shell state.Shell) error {
 
 	log.Printf("Shell detected as '%s'.", shell)
 
 	switch shell {
-	case "zsh":
+	case state.ShellZSH:
 		if err := installZSH(); err != nil {
 			return err
 		}
-	case "bash":
+	case state.ShellBash:
 		if err := installBash(); err != nil {
 			return err
 		}
-	case "fish":
+	case state.ShellFish:
 		if err := installFish(); err != nil {
 			return err
 		}

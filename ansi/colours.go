@@ -4,6 +4,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strings"
+
+	"github.com/liamg/bearings/state"
 )
 
 var ansiColourBases = map[string]int{
@@ -56,7 +58,7 @@ func (c Colour) Bg() Colour {
 	return c
 }
 
-func (c Colour) Ansi(a EscapeType) string {
+func (c Colour) Ansi(a state.Shell) string {
 	switch {
 	case c.rgb != nil && c.fg:
 		return EscapeCode(fmt.Sprintf("\x1b[%d;2;%d;%d;%dm", 38, c.rgb[0], c.rgb[1], c.rgb[2]), a)

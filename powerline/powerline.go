@@ -5,11 +5,12 @@ import (
 	"io"
 
 	"github.com/liamg/bearings/ansi"
+	"github.com/liamg/bearings/state"
 )
 
 type Writer struct {
 	inner      io.Writer
-	escape     ansi.EscapeType
+	shell      state.Shell
 	firstStyle *ansi.Style
 	lastStyle  *ansi.Style
 }
@@ -60,10 +61,10 @@ func init() {
 	}
 }
 
-func NewWriter(w io.Writer, escape ansi.EscapeType) *Writer {
+func NewWriter(w io.Writer, shell state.Shell) *Writer {
 	return &Writer{
-		inner:  w,
-		escape: escape,
+		inner: w,
+		shell: shell,
 	}
 }
 
@@ -77,7 +78,7 @@ func (p *Writer) Reset(str string) {
 }
 
 func (p *Writer) WriteAnsi(str string) {
-	p.write(ansi.EscapeCode(str, p.escape))
+	p.write(ansi.EscapeCode(str, p.shell))
 }
 
 func (p *Writer) FirstStyle() *ansi.Style {
@@ -94,7 +95,7 @@ func (p *Writer) PrintRaw(s string) {
 
 func (p *Writer) Printf(style ansi.Style, format string, args ...interface{}) {
 	input := fmt.Sprintf(format, args...)
-	input = ansi.EscapeString(input, p.escape)
+	input = ansi.EscapeString(input, p.shell)
 	if input == "" {
 		return
 	}
@@ -102,15 +103,15 @@ func (p *Writer) Printf(style ansi.Style, format string, args ...interface{}) {
 		p.firstStyle = &style
 	}
 	p.lastStyle = &style
-	p.write(style.Ansi(p.escape))
+	p.write(style.Ansi(p.shell))
 	var inverted bool
 	for _, r := range input {
 		if p.isPowerlineRune(r) != inverted {
 			inverted = !inverted
 			if inverted {
-				p.write(style.SmartInvert().Ansi(p.escape))
+				p.write(style.SmartInvert().Ansi(p.shell))
 			} else {
-				p.write(style.Ansi(p.escape))
+				p.write(style.Ansi(p.shell))
 			}
 		}
 		p.write(string(r))

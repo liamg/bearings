@@ -3,20 +3,25 @@ package state
 import (
 	"os"
 	"path/filepath"
+)
 
-	"github.com/liamg/bearings/ansi"
+type Shell string
+
+const (
+	ShellZSH  = "zsh"
+	ShellBash = "bash"
+	ShellFish = "fish"
 )
 
 type State struct {
-	AnsiEscapeType ansi.EscapeType
-	LastExitCode   int
-	WorkingDir     string
-	HomeDir        string
-	ShellPath      string
-	Shell          string
+	LastExitCode int
+	WorkingDir   string
+	HomeDir      string
+	ShellPath    string
+	Shell        Shell
 }
 
-func Derive(lastExit int) State {
+func Derive(lastExit int, forceShell string) State {
 	wd, _ := os.Getwd()
 	home, _ := os.UserHomeDir()
 	s := State{
@@ -24,11 +29,10 @@ func Derive(lastExit int) State {
 		WorkingDir:   wd,
 		HomeDir:      home,
 		ShellPath:    os.Getenv("SHELL"),
+		Shell:        Shell(forceShell),
 	}
-	s.Shell = filepath.Base(s.ShellPath)
-	switch s.Shell {
-	case "zsh":
-		s.AnsiEscapeType = ansi.EscapeZSH
+	if forceShell == "" {
+		s.Shell = Shell(filepath.Base(s.ShellPath))
 	}
 	return s
 }

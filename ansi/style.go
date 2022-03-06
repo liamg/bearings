@@ -1,5 +1,7 @@
 package ansi
 
+import "github.com/liamg/bearings/state"
+
 type Style struct {
 	AllowSmartInvert bool
 	Foreground       Colour
@@ -40,7 +42,7 @@ func (f Style) WithSmartInvert() Style {
 	return f
 }
 
-func (f Style) Ansi(a EscapeType) string {
+func (f Style) Ansi(a state.Shell) string {
 	ansi := f.Background.Ansi(a) + f.Foreground.Ansi(a)
 	if f.Bold {
 		ansi += "\x1b[1m"

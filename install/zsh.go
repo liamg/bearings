@@ -34,17 +34,10 @@ func installZSH() error {
 
 	injection := `
 function configure_bearings() {
-    PROMPT="$(bearings prompt -e $?)"
+    PROMPT="$(bearings prompt -s zsh -e $?)"
 }
 [ ! "$TERM" = "linux" ] && precmd_functions+=(configure_bearings)
 `
-
-	/*
-		prompt() { export PROMPT=$(bearings prompt -e $?); }
-		export PROMPT_COMMAND=prompt
-		precmd() { prompt; }
-		#bearings-auto:end
-	*/
 
 	rebuilt := fmt.Sprintf("%s%s%s%s%s", before, startMarker, injection, endMarker, after)
 	return os.WriteFile(target, []byte(rebuilt), 0600)

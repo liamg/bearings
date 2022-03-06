@@ -28,7 +28,7 @@ func installBash() error {
 	}
 
 	injection := `
-bearings_prompt() { export PROMPT=$(bearings prompt -e $?); }
+bearings_prompt() { export PS1=$(bearings prompt -s bash -e $?); }
 [[ ! "$TERM" = "linux" ]] && export PROMPT_COMMAND=bearings_prompt
 `
 
