@@ -10,15 +10,15 @@ import (
 	"github.com/liamg/bearings/state"
 )
 
-type customModule struct {
+type commandModule struct {
 	state state.State
 	gc    *config.Config
 	mc    config.ModuleConfig
 }
 
 func init() {
-	register("custom", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
-		return &customModule{
+	register("command", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
+		return &commandModule{
 			state: state,
 			mc:    mc,
 			gc:    gc,
@@ -29,7 +29,7 @@ func init() {
 	})
 }
 
-func (e *customModule) Render(w *powerline.Writer) {
+func (e *commandModule) Render(w *powerline.Writer) {
 	command := e.mc.String("command", "")
 	if command == "" {
 		return

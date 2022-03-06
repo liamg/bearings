@@ -62,12 +62,10 @@ You can find example configurations with screenshots for each in the [examples d
 ### Working Directory (`workdir`)
 ### Exit Code (`exitcode`)
 ### Git (`git`)
-### Custom (`custom`)
+### Command (`command`)
 
 ## TODO
 
 - [ ] customise depth of workdir
 - [ ] add examples and screenshots
 - [ ] add module documentation
-- [ ] test bash
-- [ ] test fish
