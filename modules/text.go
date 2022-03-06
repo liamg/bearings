@@ -13,7 +13,7 @@ type textModule struct {
 }
 
 func init() {
-	register("command", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
+	register("text", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
 		return &textModule{
 			state: state,
 			mc:    mc,
