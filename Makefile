@@ -8,3 +8,5 @@ test:
 .PHONY: install
 install:
 	go install .
+	bearings install
+

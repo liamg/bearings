@@ -1,78 +1,70 @@
 package prompt
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/liamg/bearings/ansi"
-
 	"github.com/liamg/bearings/config"
 	"github.com/liamg/bearings/modules"
+	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
 )
 
-func Do(w io.Writer, lastExit int) error {
-
-	var ansiEscape ansi.EscapeType
-
-	switch filepath.Base(os.Getenv("SHELL")) {
-	case "zsh":
-		ansiEscape = ansi.EscapeZSH
-	}
-
-	writer := NewPowerlineWriter(w, ansiEscape)
-
-	wd, _ := os.Getwd()
-	home, _ := os.UserHomeDir()
+func Do(w io.Writer, lastExit int, forceShell string) error {
 
 	conf, err := config.Load()
 	if err != nil {
 		return err
 	}
 
-	s := state.State{
-		LastExitCode: lastExit,
-		WorkingDir:   wd,
-		HomeDir:      home,
-	}
+	s := state.Derive(lastExit, forceShell)
+
+	writer := powerline.NewWriter(w, s.Shell)
 
 	style := ansi.Style{
 		Foreground: ansi.ParseColourString(conf.Fg).Fg(),
 		Background: ansi.ParseColourString(conf.Bg).Bg(),
 	}
 
-	sepStyle := ansi.Style{
-		Foreground: ansi.ParseColourString(conf.DividerFg).Fg(),
-		Background: style.Background,
-	}
-
-	writer.Reset()
-	writer.Printf(style, strings.Repeat("\n", conf.LinesAbove)+" ")
+	writer.Reset("")
+	writer.Printf(style, strings.Repeat("\n", conf.LinesAbove))
 
 	var lastSep string
+	var lastStyle *ansi.Style
 	for _, modConf := range conf.Modules {
+
+		buffer := bytes.NewBuffer([]byte{})
+		modWriter := powerline.NewWriter(buffer, s.Shell)
 
 		mod, mergedConfig, err := modules.Load(s, conf, modConf)
 		if err != nil {
 			return err
 		}
-		content := mod.Render()
-		if content == "" {
+		mod.Render(modWriter)
+		if buffer.Len() == 0 {
 			continue
 		}
-		content = strings.Replace(mergedConfig.Label(), "%s", content, 1)
 		modStyle := mergedConfig.Style(conf)
-		writer.Printf(sepStyle.WithSmartInvert(), "%s", lastSep)
-		writer.Printf(modStyle.WithoutSmartInvert(), "%s", content)
-
-		lastSep = fmt.Sprintf(" %s ", mergedConfig.String("separator", conf.Divider))
+		modStyle.From = lastStyle
+		writer.Printf(modStyle.WithSmartInvert(), "%s", lastSep)
+		if first := modWriter.FirstStyle(); first != nil {
+			writer.PrintRaw(first.Ansi(s.Shell))
+		}
+		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
+		lastSep = mergedConfig.String("divider", conf.Divider)
+		lastStyle = modWriter.LastStyle()
+		paddingBefore := strings.Repeat(" ", mergedConfig.Int("padding_before", conf.Padding))
+		paddingAfter := strings.Repeat(" ", mergedConfig.Int("padding_after", conf.Padding))
+		writer.PrintRaw(fmt.Sprintf("%s%s%s", paddingBefore, content, paddingAfter))
 	}
-
-	writer.Printf(style.WithSmartInvert(), " %s", conf.End)
-	writer.Reset()
-	writer.write(" ")
+	if lastStyle != nil {
+		style = *lastStyle
+	}
+	writer.Printf(style.WithSmartInvert(), "%s", conf.End)
+	writer.Reset(" ")
+	writer.WriteAnsi("\x1b[0K")
 	return nil
 }

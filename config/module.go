@@ -41,6 +41,14 @@ func (c ModuleConfig) Bg(name string, def string) ansi.Colour {
 	return ansi.ParseColourString(colour).Bg()
 }
 
+func (c ModuleConfig) Style(inherit *Config) ansi.Style {
+	return ansi.Style{
+		AllowSmartInvert: true,
+		Foreground:       c.Fg("fg", inherit.Fg),
+		Background:       c.Bg("bg", inherit.Bg),
+	}
+}
+
 func (c ModuleConfig) String(name string, orDefault string) string {
 	if val, ok := c[name]; ok {
 		return fmt.Sprintf("%s", val)
@@ -82,11 +90,4 @@ func (c ModuleConfig) Int(name string, orDefault int) int {
 		}
 	}
 	return orDefault
-}
-
-func (c ModuleConfig) Style(inherit *Config) ansi.Style {
-	return ansi.Style{
-		Foreground: c.Fg("fg", inherit.Fg),
-		Background: c.Bg("bg", inherit.Bg),
-	}
 }

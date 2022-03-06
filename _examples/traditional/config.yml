@@ -1,0 +1,12 @@
+padding: 0
+divider: ""
+end: $
+lines_above: 1
+modules:
+- type: username
+- type: text
+  text: "@"
+- type: hostname
+- type: text
+  text: ":"
+- type: cwd

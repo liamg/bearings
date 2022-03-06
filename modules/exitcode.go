@@ -1,9 +1,9 @@
 package modules
 
 import (
-	"fmt"
-
+	"github.com/liamg/bearings/ansi"
 	"github.com/liamg/bearings/config"
+	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
 )
 
@@ -13,6 +13,11 @@ type exitCodeModule struct {
 	mc    config.ModuleConfig
 }
 
+const (
+	iconExitSuccess = ""
+	iconExitFailure = ""
+)
+
 func init() {
 	register("exitcode", func(state state.State, gc *config.Config, mc config.ModuleConfig) (Module, error) {
 		return &exitCodeModule{
@@ -21,15 +26,55 @@ func init() {
 			gc:    gc,
 		}, nil
 	}, config.ModuleConfig{
-		"fg": "red",
+		"label":          "%s",
+		"show_success":   false,
+		"success_bg":     "",
+		"failure_bg":     "",
+		"success_fg":     "green",
+		"failure_fg":     "red",
+		"success_output": iconExitSuccess,
+		"failure_output": iconExitFailure,
 	})
 }
 
-func (e *exitCodeModule) Render() string {
+func (e *exitCodeModule) Render(w *powerline.Writer) {
+	baseStyle := e.mc.Style(e.gc)
 	if e.state.LastExitCode > 0 {
-		return fmt.Sprintf(
-			"\uF071 %d",
-			e.state.LastExitCode)
+		baseStyle.Foreground = ansi.ParseColourString(
+			e.mc.String(
+				"failure_fg",
+				"red",
+			),
+		).Fg()
+		baseStyle.Background = ansi.ParseColourString(
+			e.mc.String(
+				"failure_bg",
+				e.gc.Bg,
+			),
+		).Bg()
+		w.Printf(
+			baseStyle,
+			"%s %d",
+			e.mc.String("failure_output", iconExitFailure),
+			e.state.LastExitCode,
+		)
+	} else if e.mc.Bool("show_success", false) {
+		baseStyle.Foreground = ansi.ParseColourString(
+			e.mc.String(
+				"success_fg",
+				"green",
+			),
+		).Fg()
+		baseStyle.Background = ansi.ParseColourString(
+			e.mc.String(
+				"success_bg",
+				e.gc.Bg,
+			),
+		).Bg()
+		w.Printf(
+			baseStyle,
+			"%s",
+			e.mc.String("success_output", iconExitSuccess),
+		)
 	}
-	return ""
 }

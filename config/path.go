@@ -12,14 +12,14 @@ const (
 )
 
 func path() (string, error) {
-	root, err := configRoot()
+	root, err := Root()
 	if err != nil {
 		return "", err
 	}
 	return filepath.Abs(filepath.Join(root, dir, filename))
 }
 
-func configRoot() (string, error) {
+func Root() (string, error) {
 	if root := os.Getenv("XDG_CONFIG_HOME"); root != "" {
 		return root, nil
 	}
