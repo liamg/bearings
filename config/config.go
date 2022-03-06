@@ -1,6 +1,7 @@
 package config
 
 type Config struct {
+	Padding    int            `yaml:"padding"`
 	End        string         `yaml:"end"`
 	Divider    string         `yaml:"divider"`
 	DividerFg  string         `yaml:"divider_fg"`
