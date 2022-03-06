@@ -13,6 +13,7 @@ modules:
   failure_fg: "#ffffff"
   failure_bg: "#bb4444"
 - type: workdir
+  label: " %s"
   fg: "#aaaaaa"
   bg: "#292929"
 - type: git

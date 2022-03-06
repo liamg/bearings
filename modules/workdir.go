@@ -23,7 +23,7 @@ func init() {
 			gc:    gc,
 		}, nil
 	}, config.ModuleConfig{
-		"label": "\uE613 %s",
+		"label": "%s",
 	})
 }
 
