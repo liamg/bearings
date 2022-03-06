@@ -10,6 +10,7 @@ A fast, clean, super-customisable shell prompt.
 ## Gallery
 
 <table>
+    <tr><td align="center"><img src="_examples/default/screenshot.png" /></td><td align="center"><a href="_examples/default/config.yml">Default</a></td></tr>
     <tr><td align="center"><img src="_examples/halflife/screenshot.png" /></td><td align="center"><a href="_examples/halflife/config.yml">Half Life</a></td></tr>
     <tr><td align="center"><img src="_examples/traditional/screenshot.png" /></td><td align="center"><a href="_examples/traditional/config.yml">Traditional</a></td></tr>
 </table>
