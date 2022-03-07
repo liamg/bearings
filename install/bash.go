@@ -28,7 +28,14 @@ func installBash() error {
 	}
 
 	injection := `
-bearings_prompt() { export PS1=$(bearings prompt -s bash -e $?); }
+PS0='$(echo "$(($(date +%s%N)/1000000))" > /tmp/bearings.$$)';
+bearings_prompt() { 
+    NOW=$(($(date +%s%N)/1000000))
+    START=$NOW
+    [[ -f /tmp/bearings.$$ ]] && START=$(cat /tmp/bearings.$$) && rm /tmp/bearings.$$
+    DURATION=$(($NOW - $START));
+    export PS1=$(bearings prompt -s bash -e $? -d $DURATION); 
+}
 [[ ! "$TERM" = "linux" ]] && export PROMPT_COMMAND=bearings_prompt
 `
 

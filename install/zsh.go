@@ -33,8 +33,14 @@ func installZSH() error {
 	}
 
 	injection := `
+zmodload zsh/datetime
+BEARINGS_TIMER=$EPOCHREALTIME
+function preexec() {
+  BEARINGS_TIMER=$EPOCHREALTIME
+}
 function configure_bearings() {
-    PROMPT="$(bearings prompt -s zsh -e $?)"
+    local DURATION="$(($EPOCHREALTIME - $BEARINGS_TIMER))"
+    PROMPT="$(bearings prompt -s zsh -e $? -d $DURATION)"
 }
 [ ! "$TERM" = "linux" ] && precmd_functions+=(configure_bearings)
 `

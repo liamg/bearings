@@ -31,7 +31,7 @@ func installFish() error {
 
 	injection := `
 function fish_prompt
-    bearings prompt -s fish -e $status
+    bearings prompt -s fish -e $status -d $CMD_DURATION
 end
 `
 

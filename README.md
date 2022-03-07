@@ -17,6 +17,7 @@ A fast, clean, super-customisable shell prompt.
     <tr><td><img src="_examples/ukraine/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/ukraine/config.yml">Ukraine</a></td></tr>
     <tr><td><img src="_examples/pirate/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/pirate/config.yml">Pirate</a></td></tr>
     <tr><td><img src="_examples/wasteland/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/wasteland/config.yml">Wasteland</a></td></tr>
+    <tr><td><img src="_examples/hive/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/hive/config.yml">Hive</a></td></tr>
 </table>
 
 ## Installation

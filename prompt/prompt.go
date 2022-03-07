@@ -13,14 +13,14 @@ import (
 	"github.com/liamg/bearings/state"
 )
 
-func Do(w io.Writer, lastExit int, forceShell string) error {
+func Do(w io.Writer, lastExit int, forceShell string, lastDuration float64) error {
 
 	conf, err := config.Load()
 	if err != nil {
 		return err
 	}
 
-	s := state.Derive(lastExit, forceShell)
+	s := state.Derive(lastExit, forceShell, lastDuration)
 
 	writer := powerline.NewWriter(w, s.Shell)
 
@@ -65,6 +65,6 @@ func Do(w io.Writer, lastExit int, forceShell string) error {
 	}
 	writer.Printf(style.WithSmartInvert(), "%s", conf.End)
 	writer.Reset(" ")
-	writer.WriteAnsi("\x1b[0K")
+	writer.WriteAnsi("\x1b[0K\x1b[0m")
 	return nil
 }
