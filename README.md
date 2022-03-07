@@ -10,10 +10,13 @@ A fast, clean, super-customisable shell prompt.
 ## Examples Gallery
 
 <table>
-    <tr><td align="center"><img src="_examples/default/screenshot.png"  alt="prompt demo"/></td><td align="center"><a href="_examples/default/config.yml">Default</a></td></tr>
-    <tr><td align="center"><img src="_examples/halflife/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/halflife/config.yml">Half Life</a></td></tr>
-    <tr><td align="center"><img src="_examples/traditional/screenshot.png" alt="prompt demo" /></td><td align="center"><a href="_examples/traditional/config.yml">Traditional</a></td></tr>
-    <tr><td align="center"><img src="_examples/fire/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/fire/config.yml">Fire</a></td></tr>
+    <tr><td><img src="_examples/default/screenshot.png"  alt="prompt demo"/></td><td align="center"><a href="_examples/default/config.yml">Default</a></td></tr>
+    <tr><td><img src="_examples/halflife/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/halflife/config.yml">Half Life</a></td></tr>
+    <tr><td><img src="_examples/traditional/screenshot.png" alt="prompt demo" /></td><td align="center"><a href="_examples/traditional/config.yml">Traditional</a></td></tr>
+    <tr><td><img src="_examples/fire/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/fire/config.yml">Fire</a></td></tr>
+    <tr><td><img src="_examples/ukraine/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/ukraine/config.yml">Ukraine</a></td></tr>
+    <tr><td><img src="_examples/pirate/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/pirate/config.yml">Pirate</a></td></tr>
+    <tr><td><img src="_examples/wasteland/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/wasteland/config.yml">Wasteland</a></td></tr>
 </table>
 
 ## Installation
@@ -99,7 +102,7 @@ You can find example configurations with screenshots for each in the [examples d
 | lines_above | 1                       | Number of blank lines to render above the prompt.                                      |
 | modules     | exitcode, cwd, git      | A list of modules and their configurations.                                            |
 
-Colours can be specified in hexidecimal, e.g. `#ffffff`. You can also refer to your terminal colour scheme colours using `default` (for default fg/bg), `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `black`.
+Colours can be specified in hexadecimal, e.g. `#ffffff`. You can also refer to your terminal colour scheme colours using `default` (for default fg/bg), `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `black`, `lightred`, `lightgreen`, `lightyellow`, `lightblue`, `lightmagenta`, `lightcyan`, `lightwhite`, `lightblack`
 
 All modules support the following options:
 
@@ -111,6 +114,10 @@ All modules support the following options:
 | padding_before | _inherits from top-level padding_ | Number of spaces to output before the module content.                                                                          |
 | padding_after  | _inherits from top-level padding_ | Number of spaces to output after the module content.                                                                           |
 | divider        | _inherits from top-level divider_ | Divider string to output after the module, to separate it fro mthe next module. If there is no next module, will not be shown. |
+ | bold           | false                             | Turns on bold text.                                                                                                            |
+| italic         | false                             | Turns on italic text.                                                                                                          |
+| faint          | false                             | Turns on faint text.                                                                                                           |
+| underline      | false                             | Turns on underlined text.                                                                                                      |
 
 ## Available Modules
 
@@ -125,6 +132,9 @@ Show the current working directory.
 | max_depth    | 0                         | The maximum number of directories to render in the path. If this number is exceeded, the output will be truncated to show `...` followed by the lowest `max_depth` number of directories. |
 | separator    |                          | The string to separate directories with.                                                                                                                                                  |
  | separator_fg | _inherits from module fg_ | Foreground colour of the separator.                                                                                                                                                       |
+ | deep_prefix  |                          | Output to prefix the path with when the max depth is reached.                                                                                                                             |
+ | home_text    | ~                         | Text to represent home directory.                                                                                                                                                         |
+ | separator_at_start | false | Show the separator at the start of the path.
 
 ### Exit Code (`exitcode`)
 
@@ -146,13 +156,17 @@ Show the exit code of the previous command. By default will only show when the c
 
 Show an overview of the current git status. Displays the branch name, a set of possible icons, and the number of commits ahead/behind of the base branch.
 
-| Property       | Default | Description                                                  |
-|----------------|---------|--------------------------------------------------------------|
-| icon_stashed   | S       | The icon/text to display when stashed changes are available. |
-| icon_untracked | ?       | The icon/text to display when untracked files are present.   |
-| icon_modified  | M       | The icon/text to display when tracked files are modified.    |
-| icon_staged    | A       | The icon/text to display when changes are staged.            |
-| icon_conflicts | !       | The icon/text to display when conflicts are present.         |
+| Property       | Default   | Description                                                  |
+|----------------|-----------|--------------------------------------------------------------|
+| icon_stashed   | S         | The icon/text to display when stashed changes are available. |
+| icon_untracked | ?         | The icon/text to display when untracked files are present.   |
+| icon_modified  | M         | The icon/text to display when tracked files are modified.    |
+| icon_staged    | A         | The icon/text to display when changes are staged.            |
+| icon_conflicts | !         | The icon/text to display when conflicts are present.         |
+| clean_bg       | _inherit_ | Background colour when there are no changes.                 |
+| clean_fg       | _inherit_ | Foreground colour when there are no changes.                 |
+| dirty_bg       | _inherit_ | Background colour when there are changes.                    |
+| dirty_fg       | _inherit_ | Foreground colour when there are changes.                    |
 
 ### Command (`command`)
 

@@ -23,12 +23,22 @@ func (f Style) SmartInvert() Style {
 		return Style{
 			Foreground: f.From.Background.Fg(),
 			Background: f.Background.Bg(),
+			Bold:       f.Bold,
+			Faint:      f.Faint,
+			Underline:  f.Underline,
+			Italic:     f.Italic,
+			Blink:      f.Blink,
 		}
 	}
 
 	return Style{
 		Foreground: f.Background.Fg(),
 		Background: DefaultBg,
+		Bold:       f.Bold,
+		Faint:      f.Faint,
+		Underline:  f.Underline,
+		Italic:     f.Italic,
+		Blink:      f.Blink,
 	}
 }
 
@@ -45,19 +55,19 @@ func (f Style) WithSmartInvert() Style {
 func (f Style) Ansi(a state.Shell) string {
 	ansi := f.Background.Ansi(a) + f.Foreground.Ansi(a)
 	if f.Bold {
-		ansi += "\x1b[1m"
+		ansi += EscapeCode("\x1b[1m", a)
 	}
 	if f.Faint {
-		ansi += "\x1b[2m"
+		ansi += EscapeCode("\x1b[2m", a)
 	}
 	if f.Italic {
-		ansi += "\x1b[3m"
+		ansi += EscapeCode("\x1b[3m", a)
 	}
 	if f.Underline {
-		ansi += "\x1b[4m"
+		ansi += EscapeCode("\x1b[4m", a)
 	}
 	if f.Blink {
-		ansi += "\x1b[5m"
+		ansi += EscapeCode("\x1b[5m", a)
 	}
 	return ansi
 }

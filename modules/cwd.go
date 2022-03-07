@@ -23,33 +23,31 @@ func init() {
 			gc:    gc,
 		}, nil
 	}, config.ModuleConfig{
-		"label":        "%s",
-		"max_depth":    0,
-		"separator":    " \uE0B1 ",
-		"separator_fg": "",
+		"label":       "%s",
+		"home_text":   "~",
+		"max_depth":   0,
+		"separator":   " \uE0B1 ",
+		"deep_prefix": "\uF141",
 	})
 }
 
 func (e *workDirModule) Render(w *powerline.Writer) {
 	clean := strings.TrimPrefix(e.state.WorkingDir, e.state.HomeDir)
 	if clean != e.state.WorkingDir {
-		clean = filepath.Join("~", clean)
+		clean = filepath.Join(e.mc.String("home_text", "~"), clean)
 	}
 	parts := strings.Split(clean, string(filepath.Separator))
 	if max := e.mc.Int("max_depth", 0); max > 0 {
 		if len(parts) > max {
-			parts = append([]string{"..."}, parts[len(parts)-max:]...)
+			parts = append([]string{e.mc.String("deep_prefix", "...")}, parts[len(parts)-(max):]...)
 		}
 	}
 	baseStyle := e.mc.Style(e.gc)
 	sepStyle := baseStyle
-	fg := e.mc.String("separator_fg", "")
-	if fg != "" {
-		sepStyle.Foreground = e.mc.Fg("separator_fg", baseStyle.Foreground.String())
-	}
+	sepStyle.Foreground = e.mc.Fg("separator_fg", baseStyle.Foreground.String())
 	separator := e.mc.String("separator", string(filepath.Separator))
 	for i, part := range parts {
-		if i > 0 {
+		if i > 0 || e.mc.Bool("separator_at_start", false) {
 			w.Printf(sepStyle, "%s", separator)
 		}
 		w.Printf(baseStyle, "%s", part)

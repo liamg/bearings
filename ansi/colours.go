@@ -9,15 +9,23 @@ import (
 )
 
 var ansiColourBases = map[string]int{
-	"black":   0,
-	"red":     1,
-	"green":   2,
-	"yellow":  3,
-	"blue":    4,
-	"magenta": 5,
-	"cyan":    6,
-	"white":   7,
-	"default": 9,
+	"black":        0,
+	"red":          1,
+	"green":        2,
+	"yellow":       3,
+	"blue":         4,
+	"magenta":      5,
+	"cyan":         6,
+	"white":        7,
+	"default":      9,
+	"lightblack":   60,
+	"lightred":     61,
+	"lightgreen":   62,
+	"lightyellow":  63,
+	"lightblue":    64,
+	"lightmagenta": 65,
+	"lightcyan":    66,
+	"lightwhite":   67,
 }
 
 type Colour struct {

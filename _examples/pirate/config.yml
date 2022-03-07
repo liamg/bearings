@@ -1,0 +1,17 @@
+padding: 1
+end: 
+divider: 
+fg: "#d0d0d0"
+bg: "#000000"
+lines_above: 1
+modules:
+- type: exitcode
+  success_output: "ﮊ"
+  success_fg: "#ffffff"
+  show_success: true
+  failure_fg: "#ffffff"
+  failure_bg: "#bb4444"
+- type: cwd
+  max_depth: 3
+  separator_fg: "#444444"
+- type: git
