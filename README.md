@@ -181,6 +181,14 @@ Run a shell command and use the combined output streams as the module output.
 
 Show the current hostname.
 
+### Languages
+
+Show icons for discovered languages in the current folder
+
+| Property | Default  | Description                      |
+|----------|----------|----------------------------------|
+| separator | <space> | The separator between the icons. |
+
 ### New line (`newline`)
 
 Output a single new line. Before/after padding values default to `0` for convenience.
