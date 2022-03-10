@@ -3,8 +3,8 @@ package modules
 import (
 	"os"
 	"sort"
-	"strings"
 
+	"github.com/liamg/bearings/ansi"
 	"github.com/liamg/bearings/config"
 	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
@@ -16,13 +16,18 @@ type languagesModule struct {
 	mc    config.ModuleConfig
 }
 
-var languageIcons = map[string]string{
-	"go.mod":       "ﳑ",
-	"Dockerfile":   "",
-	"package.json": "",
-	"build.gradle": "",
-	"pom.xml":      "",
-	"Gemfile":      "",
+type icon struct {
+	glyph  string
+	colour string
+}
+
+var languageIcons = map[string]icon{
+	"go.mod":       {"ﳑ", "lightblue"},
+	"Dockerfile":   {" ", "blue"},
+	"package.json": {"", "yellow"},
+	"build.gradle": {"", "green"},
+	"pom.xml":      {"", "blue"},
+	"Gemfile":      {"", "red"},
 }
 
 func init() {
@@ -33,18 +38,31 @@ func init() {
 			gc:    gc,
 		}, nil
 	}, config.ModuleConfig{
-		"label": "%s",
+		"label":     "%s",
+		"separator": " ",
 	})
 }
 
 func (e *languagesModule) Render(w *powerline.Writer) {
 	baseStyle := e.mc.Style(e.gc)
-	var icons []string
+	var icons []icon
 	for filename, icon := range languageIcons {
 		if _, err := os.Stat(filename); err == nil {
 			icons = append(icons, icon)
 		}
 	}
-	sort.Strings(icons)
-	w.Printf(baseStyle, "%s", strings.Join(icons, " "))
+
+	sort.Slice(icons, func(i, j int) bool {
+		return icons[i].glyph < icons[j].glyph
+	})
+
+	for i, icon := range icons {
+		iconStyle := baseStyle
+		iconStyle.Foreground = ansi.ParseColourString(icon.colour).Fg()
+		separator := e.mc.String("separator", " ")
+		if i == len(icons)-1 {
+			separator = ""
+		}
+		w.Printf(iconStyle, "%s%s", icon.glyph, separator)
+	}
 }
