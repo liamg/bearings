@@ -96,13 +96,12 @@ func (p *Writer) PrintRaw(s string) {
 func (p *Writer) Printf(style ansi.Style, format string, args ...interface{}) {
 	input := fmt.Sprintf(format, args...)
 	input = ansi.EscapeString(input, p.shell)
-	if input == "" {
-		return
-	}
 	if p.firstStyle == nil {
 		p.firstStyle = &style
 	}
-	p.lastStyle = &style
+	if len(input) > 0 {
+		p.lastStyle = &style
+	}
 	p.write(style.Ansi(p.shell))
 	var inverted bool
 	for _, r := range input {

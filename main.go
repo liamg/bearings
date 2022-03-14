@@ -41,8 +41,7 @@ var installCmd = &cobra.Command{
 
 func main() {
 	promptCmd.Flags().IntVarP(&flagJobCount, "jobs", "j", flagJobCount, "Number of jobs.")
-	promptCmd.Flags().
-		IntVarP(&flagLastExitCode, "exit", "e", flagLastExitCode, "Last exit code. Should be supplied via $?.")
+	promptCmd.Flags().IntVarP(&flagLastExitCode, "exit", "e", flagLastExitCode, "Last exit code. Should be supplied via $?.")
 	promptCmd.Flags().Float64VarP(&flagDuration, "duration", "d", flagDuration, "Duration of previous command. Units depend on shell. Should not be used manually.")
 	rootCmd.PersistentFlags().
 		StringVarP(&flagShell, "shell", "s", flagShell, "Shell to install bearings for. Auto-detects by default.")

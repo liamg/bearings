@@ -37,13 +37,14 @@ function preexec() {
   btimer=$(($(date +%s%0N)/1000000))
 }
 function configure_bearings() {
+    last=$?
     elapsed=0
     if [ $btimer ]; then
       now=$(($(date +%s%0N)/1000000))
       elapsed=$(($now-$btimer))
       unset btimer
     fi
-    PROMPT="$(bearings prompt -s zsh -e $? -d ${elapsed} -j $(jobs | wc -l))"
+    PROMPT="$(bearings prompt -s zsh -e ${last} -d ${elapsed} -j $(jobs | wc -l))"
 }
 [ ! "$TERM" = "linux" ] && precmd_functions+=(configure_bearings)
 `
