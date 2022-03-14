@@ -90,23 +90,25 @@ For completeness, here is the default config file:
 padding: 1
 end: 
 divider: 
+fg: white
+bg: black
 lines_above: 1
 modules:
-- type: exitcode
+- failure_bg: '#bb4444'
+  failure_fg: '#ffffff'
   show_success: true
+  success_bg: '#000000'
+  success_fg: '#ffffff'
   success_output: 
-  success_fg: "#ffffff"
-  success_bg: "#000000"
-  failure_fg: "#ffffff"
-  failure_bg: "#bb4444"
-- type: cwd
-  label: " %s"
+  type: exitcode
+- bg: '#334488'
+  fg: '#aaaaaa'
+  label:  %s
   max_depth: 3
-  fg: "#aaaaaa"
-  bg: "#334488"
-- type: git
-  fg: "#777777"
-  bg: "#393939"
+  type: cwd
+- bg: '#393939'
+  fg: '#777777'
+  type: git
 ```
 
 You can find example configurations with screenshots for each in the [examples directory](_examples).

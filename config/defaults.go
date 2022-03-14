@@ -18,6 +18,12 @@ var DefaultConfig = Config{
 			"failure_bg":     "#bb4444",
 		},
 		{
+			"type":      "duration",
+			"threshold": "3s",
+			"fg":        "#334488",
+			"bg":        "#ffffff",
+		},
+		{
 			"type":      "cwd",
 			"label":     " %s",
 			"max_depth": 3,
