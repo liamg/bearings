@@ -199,6 +199,8 @@ Run a shell command and use the combined output streams as the module output.
 
 Shows the duration of the previous shell command. Can be configured to only show duration when over a certain threshold.
 
+![Duration example](_assets/duration.png)
+
 | Property  | Default | Description                             |
 |-----------|---------|-----------------------------------------|
 | threshold | 3s      | Show duration when over this threshold. |
