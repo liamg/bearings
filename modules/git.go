@@ -46,11 +46,11 @@ func init() {
 	})
 }
 
-func (e *gitModule) Render(w *powerline.Writer) {
+func (e *gitModule) Render(w *powerline.Writer) bool {
 	baseStyle := e.mc.Style(e.gc)
 	path, err := e.findGitPath(e.state.WorkingDir, 0)
 	if err != nil {
-		return
+		return false
 	}
 
 	output, clean := e.gitInfo(path)
@@ -68,6 +68,7 @@ func (e *gitModule) Render(w *powerline.Writer) {
 		"%s",
 		output,
 	)
+	return false
 }
 
 func (e *gitModule) findGitPath(start string, count int) (string, error) {

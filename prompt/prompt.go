@@ -43,7 +43,7 @@ func Do(w io.Writer, lastExit int, forceShell string, lastDuration float64, jobC
 		if err != nil {
 			return err
 		}
-		mod.Render(modWriter)
+		ending := mod.Render(modWriter)
 		if buffer.Len() == 0 {
 			continue
 		}
@@ -56,6 +56,12 @@ func Do(w io.Writer, lastExit int, forceShell string, lastDuration float64, jobC
 		content := strings.ReplaceAll(mergedConfig.Label(), "%s", buffer.String())
 		lastSep = mergedConfig.String("divider", conf.Divider)
 		lastStyle = modWriter.LastStyle()
+		if ending {
+			writer.Printf(style.WithSmartInvert(), "%s", conf.End)
+			writer.Reset(" ")
+			writer.WriteAnsi("\x1b[0K\x1b[0m")
+			lastSep = ""
+		}
 		paddingBefore := strings.Repeat(" ", mergedConfig.Int("padding_before", conf.Padding))
 		paddingAfter := strings.Repeat(" ", mergedConfig.Int("padding_after", conf.Padding))
 		writer.PrintRaw(fmt.Sprintf("%s%s%s", paddingBefore, content, paddingAfter))

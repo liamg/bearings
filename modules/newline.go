@@ -26,7 +26,8 @@ func init() {
 	})
 }
 
-func (e *newlineModule) Render(w *powerline.Writer) {
+func (e *newlineModule) Render(w *powerline.Writer) bool {
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "\n")
+	return true
 }

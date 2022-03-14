@@ -38,7 +38,7 @@ func init() {
 	})
 }
 
-func (e *exitCodeModule) Render(w *powerline.Writer) {
+func (e *exitCodeModule) Render(w *powerline.Writer) bool {
 	baseStyle := e.mc.Style(e.gc)
 	if e.state.LastExitCode > 0 {
 		baseStyle.Foreground = ansi.ParseColourString(
@@ -92,4 +92,5 @@ func (e *exitCodeModule) Render(w *powerline.Writer) {
 			e.mc.String("success_output", iconExitSuccess),
 		)
 	}
+	return false
 }

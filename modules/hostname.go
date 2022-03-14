@@ -26,11 +26,12 @@ func init() {
 	})
 }
 
-func (e *hostnameModule) Render(w *powerline.Writer) {
+func (e *hostnameModule) Render(w *powerline.Writer) bool {
 	hostname, err := os.Hostname()
 	if err != nil {
 		hostname = "???"
 	}
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "%s", hostname)
+	return false
 }

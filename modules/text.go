@@ -25,11 +25,12 @@ func init() {
 	})
 }
 
-func (e *textModule) Render(w *powerline.Writer) {
+func (e *textModule) Render(w *powerline.Writer) bool {
 	text := e.mc.String("text", "")
 	if text == "" {
-		return
+		return false
 	}
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "%s", text)
+	return false
 }

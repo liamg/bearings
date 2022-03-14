@@ -27,7 +27,7 @@ func init() {
 	})
 }
 
-func (e *durationModule) Render(w *powerline.Writer) {
+func (e *durationModule) Render(w *powerline.Writer) bool {
 	var duration time.Duration
 	switch e.state.Shell {
 	case state.ShellFish, state.ShellBash, state.ShellZSH:
@@ -41,8 +41,9 @@ func (e *durationModule) Render(w *powerline.Writer) {
 		t = time.Second * -1
 	}
 	if duration < t {
-		return
+		return false
 	}
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "%s", duration)
+	return false
 }

@@ -31,7 +31,7 @@ func init() {
 	})
 }
 
-func (e *workDirModule) Render(w *powerline.Writer) {
+func (e *workDirModule) Render(w *powerline.Writer) bool {
 	clean := strings.TrimPrefix(e.state.WorkingDir, e.state.HomeDir)
 	if clean != e.state.WorkingDir {
 		clean = filepath.Join(e.mc.String("home_text", "~"), clean)
@@ -52,4 +52,5 @@ func (e *workDirModule) Render(w *powerline.Writer) {
 		}
 		w.Printf(baseStyle, "%s", part)
 	}
+	return false
 }

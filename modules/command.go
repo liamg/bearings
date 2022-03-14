@@ -29,10 +29,10 @@ func init() {
 	})
 }
 
-func (e *commandModule) Render(w *powerline.Writer) {
+func (e *commandModule) Render(w *powerline.Writer) bool {
 	command := e.mc.String("command", "")
 	if command == "" {
-		return
+		return false
 	}
 
 	buffer := bytes.NewBuffer([]byte{})
@@ -45,4 +45,5 @@ func (e *commandModule) Render(w *powerline.Writer) {
 
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "%s", strings.TrimSpace(buffer.String()))
+	return false
 }

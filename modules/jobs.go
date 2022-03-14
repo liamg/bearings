@@ -24,10 +24,11 @@ func init() {
 	})
 }
 
-func (e *jobsModule) Render(w *powerline.Writer) {
+func (e *jobsModule) Render(w *powerline.Writer) bool {
 	if e.state.JobCount == 0 {
-		return
+		return false
 	}
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "%d", e.state.JobCount)
+	return false
 }

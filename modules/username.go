@@ -26,11 +26,12 @@ func init() {
 	})
 }
 
-func (e *usernameModule) Render(w *powerline.Writer) {
+func (e *usernameModule) Render(w *powerline.Writer) bool {
 	username := "?"
 	if u, err := user.Current(); err == nil {
 		username = u.Username
 	}
 	baseStyle := e.mc.Style(e.gc)
 	w.Printf(baseStyle, "%s", username)
+	return false
 }

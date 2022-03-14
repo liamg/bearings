@@ -45,7 +45,7 @@ func init() {
 	})
 }
 
-func (e *languagesModule) Render(w *powerline.Writer) {
+func (e *languagesModule) Render(w *powerline.Writer) bool {
 	baseStyle := e.mc.Style(e.gc)
 	var icons []icon
 	for filename, icon := range languageIcons {
@@ -67,4 +67,5 @@ func (e *languagesModule) Render(w *powerline.Writer) {
 		}
 		w.Printf(iconStyle, "%s%s", icon.glyph, separator)
 	}
+	return false
 }
