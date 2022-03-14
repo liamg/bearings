@@ -1,0 +1,29 @@
+padding: 1
+end: 
+divider: 
+fg: "#d0d0d0"
+bg: "#292929"
+lines_above: 1
+modules:
+- type: exitcode
+  show_success: true
+  success_output: ""
+  success_fg: "#000000"
+  success_bg: "#dddd22"
+  failure_fg: "#ffffff"
+  failure_bg: "#bb4444"
+  padding_before: 0
+  padding_after: 0
+- type: cwd
+  label: "%s"
+  fg: "bbbb22"
+  bg: "#000000"
+  separator_fg: "#444444"
+  home_text: ""
+  divider: ""
+- type: text
+  padding_before: 0
+  padding_after: 0
+  text: ""
+  bg: "#dddd22"
+  fg: "#000000"

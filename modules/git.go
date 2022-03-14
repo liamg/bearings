@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/liamg/bearings/config"
+	"github.com/liamg/bearings/powerline"
 	"github.com/liamg/bearings/state"
 )
 
@@ -37,7 +38,6 @@ func init() {
 		}, nil
 	}, config.ModuleConfig{
 		"label":          "\uE725 %s",
-		"fg":             "green",
 		"icon_stashed":   gitStashedIcon,
 		"icon_untracked": gitUntrackedIcon,
 		"icon_modified":  gitModifiedIcon,
@@ -46,12 +46,28 @@ func init() {
 	})
 }
 
-func (e *gitModule) Render() string {
+func (e *gitModule) Render(w *powerline.Writer) {
+	baseStyle := e.mc.Style(e.gc)
 	path, err := e.findGitPath(e.state.WorkingDir, 0)
 	if err != nil {
-		return ""
+		return
 	}
-	return e.gitInfo(path)
+
+	output, clean := e.gitInfo(path)
+
+	if clean {
+		baseStyle.Foreground = e.mc.Fg("clean_fg", baseStyle.Foreground.String())
+		baseStyle.Background = e.mc.Fg("clean_bg", baseStyle.Background.String())
+	} else {
+		baseStyle.Foreground = e.mc.Fg("dirty_fg", baseStyle.Foreground.String())
+		baseStyle.Background = e.mc.Fg("dirty_bg", baseStyle.Background.String())
+	}
+
+	w.Printf(
+		baseStyle,
+		"%s",
+		output,
+	)
 }
 
 func (e *gitModule) findGitPath(start string, count int) (string, error) {
@@ -68,11 +84,11 @@ func (e *gitModule) findGitPath(start string, count int) (string, error) {
 }
 
 // see https://git-scm.com/docs/git-status
-func (e *gitModule) gitInfo(path string) string {
+func (e *gitModule) gitInfo(path string) (string, bool) {
 
 	head, err := os.ReadFile(filepath.Join(path, ".git", "HEAD"))
 	if err != nil {
-		return ""
+		return "", true
 	}
 	var branch string
 	for _, line := range strings.Split(string(head), "\n") {
@@ -170,5 +186,6 @@ func (e *gitModule) gitInfo(path string) string {
 		output = fmt.Sprintf("%s -%d", output, behind)
 	}
 
-	return output
+	clean := untracked+modified+staged+conflicts == 0
+	return output, clean
 }

@@ -1,0 +1,21 @@
+padding: 1
+end: 
+divider: 
+fg: "#ffd700"
+bg: "#0057b7"
+lines_above: 1
+modules:
+- type: exitcode
+  show_success: true
+  success_output: 
+  success_bg: "#ffd700"
+  success_fg: "#0057b7"
+  failure_fg: "#ffffff"
+  failure_bg: "#bb4444"
+- type: username
+  bg: "#292929"
+  fg: "#ffd700"
+  fg: "#0057b7"
+- type: cwd
+  fg: "#ffd700"
+  bg: "#0057b7"

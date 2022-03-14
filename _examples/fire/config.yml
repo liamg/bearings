@@ -1,0 +1,21 @@
+padding: 1
+end: ""
+divider: " "
+fg: "#d0d0d0"
+bg: "#292929"
+lines_above: 1
+modules:
+- type: exitcode
+  show_success: true
+  success_output: 
+  success_fg: "#ff4422"
+  success_bg: "#000000"
+  failure_fg: "#ffffff"
+  failure_bg: "#bb4444"
+- type: cwd
+  label: " %s"
+  fg: "#000000"
+  bg: "#ff8822"
+- type: git
+  fg: "#000000"
+  bg: "#ddbb44"

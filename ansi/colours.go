@@ -4,18 +4,28 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strings"
+
+	"github.com/liamg/bearings/state"
 )
 
 var ansiColourBases = map[string]int{
-	"black":   0,
-	"red":     1,
-	"green":   2,
-	"yellow":  3,
-	"blue":    4,
-	"magenta": 5,
-	"cyan":    6,
-	"white":   7,
-	"default": 9,
+	"black":        0,
+	"red":          1,
+	"green":        2,
+	"yellow":       3,
+	"blue":         4,
+	"magenta":      5,
+	"cyan":         6,
+	"white":        7,
+	"default":      9,
+	"lightblack":   60,
+	"lightred":     61,
+	"lightgreen":   62,
+	"lightyellow":  63,
+	"lightblue":    64,
+	"lightmagenta": 65,
+	"lightcyan":    66,
+	"lightwhite":   67,
 }
 
 type Colour struct {
@@ -34,6 +44,18 @@ var DefaultBg = Colour{
 	fg:    false,
 }
 
+func (c Colour) String() string {
+	if len(c.rgb) == 3 {
+		return fmt.Sprintf("#%02x%02x%02x", c.rgb[0], c.rgb[1], c.rgb[2])
+	}
+	for name, index := range ansiColourBases {
+		if index == c.index {
+			return name
+		}
+	}
+	return ""
+}
+
 func (c Colour) Fg() Colour {
 	c.fg = true
 	return c
@@ -44,69 +66,17 @@ func (c Colour) Bg() Colour {
 	return c
 }
 
-func (c Colour) Ansi(a EscapeType) string {
+func (c Colour) Ansi(a state.Shell) string {
 	switch {
 	case c.rgb != nil && c.fg:
-		return Escape(fmt.Sprintf("\x1b[%d;2;%d;%d;%dm", 38, c.rgb[0], c.rgb[1], c.rgb[2]), a)
+		return EscapeCode(fmt.Sprintf("\x1b[%d;2;%d;%d;%dm", 38, c.rgb[0], c.rgb[1], c.rgb[2]), a)
 	case c.rgb != nil && !c.fg:
-		return Escape(fmt.Sprintf("\x1b[%d;2;%d;%d;%dm", 48, c.rgb[0], c.rgb[1], c.rgb[2]), a)
+		return EscapeCode(fmt.Sprintf("\x1b[%d;2;%d;%d;%dm", 48, c.rgb[0], c.rgb[1], c.rgb[2]), a)
 	case c.fg:
-		return Escape(fmt.Sprintf("\x1b[%dm", c.index+30), a)
+		return EscapeCode(fmt.Sprintf("\x1b[%dm", c.index+30), a)
 	default:
-		return Escape(fmt.Sprintf("\x1b[%dm", c.index+40), a)
+		return EscapeCode(fmt.Sprintf("\x1b[%dm", c.index+40), a)
 	}
-}
-
-type Style struct {
-	AllowSmartInvert bool
-	Foreground       Colour
-	Background       Colour
-	Bold             bool
-	Faint            bool
-	Italic           bool
-	Underline        bool
-	Blink            bool
-}
-
-func (f Style) SmartInvert() Style {
-	if !f.AllowSmartInvert {
-		return f
-	}
-
-	return Style{
-		Foreground: f.Background.Fg(),
-		Background: DefaultBg,
-	}
-}
-
-func (f Style) WithoutSmartInvert() Style {
-	f.AllowSmartInvert = false
-	return f
-}
-
-func (f Style) WithSmartInvert() Style {
-	f.AllowSmartInvert = true
-	return f
-}
-
-func (f Style) Ansi(a EscapeType) string {
-	ansi := f.Background.Ansi(a) + f.Foreground.Ansi(a)
-	if f.Bold {
-		ansi += "\x1b[1m"
-	}
-	if f.Faint {
-		ansi += "\x1b[2m"
-	}
-	if f.Italic {
-		ansi += "\x1b[3m"
-	}
-	if f.Underline {
-		ansi += "\x1b[4m"
-	}
-	if f.Blink {
-		ansi += "\x1b[5m"
-	}
-	return ansi
 }
 
 func ParseColourString(colour string) Colour {
@@ -119,9 +89,7 @@ func ParseColourString(colour string) Colour {
 }
 
 func hexToANSI(input string) Colour {
-	if strings.HasPrefix(input, "#") {
-		input = input[1:]
-	}
+	input = strings.TrimPrefix(input, "#")
 	if len(input) != 6 {
 		return DefaultFg
 	}

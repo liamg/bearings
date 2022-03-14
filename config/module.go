@@ -11,10 +11,14 @@ import (
 type ModuleConfig map[string]interface{}
 
 func (c ModuleConfig) Merge(overrides ModuleConfig) ModuleConfig {
-	for key, val := range overrides {
-		c[key] = val
+	merged := make(ModuleConfig)
+	for key, val := range c {
+		merged[key] = val
 	}
-	return c
+	for key, val := range overrides {
+		merged[key] = val
+	}
+	return merged
 }
 
 func (c ModuleConfig) Type() string {
@@ -39,6 +43,39 @@ func (c ModuleConfig) Bg(name string, def string) ansi.Colour {
 		colour = fmt.Sprintf("%s", val)
 	}
 	return ansi.ParseColourString(colour).Bg()
+}
+
+func (c ModuleConfig) Bold() bool {
+	return c.Bool("bold", false)
+}
+
+func (c ModuleConfig) Italic() bool {
+	return c.Bool("italic", false)
+}
+
+func (c ModuleConfig) Underline() bool {
+	return c.Bool("underline", false)
+}
+
+func (c ModuleConfig) Faint() bool {
+	return c.Bool("faint", false)
+}
+
+func (c ModuleConfig) Blink() bool {
+	return c.Bool("blink", false)
+}
+
+func (c ModuleConfig) Style(inherit *Config) ansi.Style {
+	return ansi.Style{
+		AllowSmartInvert: true,
+		Foreground:       c.Fg("fg", inherit.Fg),
+		Background:       c.Bg("bg", inherit.Bg),
+		Bold:             c.Bold(),
+		Italic:           c.Italic(),
+		Underline:        c.Underline(),
+		Faint:            c.Faint(),
+		Blink:            c.Blink(),
+	}
 }
 
 func (c ModuleConfig) String(name string, orDefault string) string {
@@ -82,11 +119,4 @@ func (c ModuleConfig) Int(name string, orDefault int) int {
 		}
 	}
 	return orDefault
-}
-
-func (c ModuleConfig) Style(inherit *Config) ansi.Style {
-	return ansi.Style{
-		Foreground: c.Fg("fg", inherit.Fg),
-		Background: c.Bg("bg", inherit.Bg),
-	}
 }
