@@ -19,6 +19,8 @@ A fast, clean, super-customisable shell prompt.
     <tr><td><img src="_examples/hive/screenshot.png" alt="prompt demo"/></td><td align="center"><a href="_examples/hive/config.yml">Hive</a></td></tr>
 </table>
 
+_Feel free to PR your own screenshots onto this list!_
+
 ## Installation
 
 You can download the latest binaries [here](https://github.com/liamg/bearings/releases/latest). Make sure you `chmod +x`  the binary and place it somewhere in your `PATH`. Then follow the instructions for your shell below.
