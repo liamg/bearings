@@ -34,13 +34,21 @@ func installZSH() error {
 
 	injection := `
 function preexec() {
-  btimer=$(($(date +%s%0N)/1000000))
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    btimer=$(($(date +%s)*1000))
+  else
+    btimer=$(($(date +%s%N)/1000000))
+  fi
 }
 function configure_bearings() {
     last=$?
     elapsed=0
     if [ $btimer ]; then
-      now=$(($(date +%s%0N)/1000000))
+      if [[ $OSTYPE == 'darwin'* ]]; then
+        now=$(($(date +%s)*1000))
+      else
+        now=$(($(date +%s%N)/1000000))
+      fi
       elapsed=$(($now-$btimer))
       unset btimer
     fi
