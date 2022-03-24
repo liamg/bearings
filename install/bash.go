@@ -28,9 +28,17 @@ func installBash() error {
 	}
 
 	injection := `
-PS0='$(echo "$(($(date +%s%N)/1000000))" > /tmp/bearings.$$)';
+if [[ $OSTYPE == 'darwin'* ]]; then
+    PS0='$(echo "$(($(date +%s)*1000))" > /tmp/bearings.$$)';
+else
+    PS0='$(echo "$(($(date +%s%N)/1000000))" > /tmp/bearings.$$)';
+fi
 bearings_prompt() { 
-    NOW=$(($(date +%s%N)/1000000))
+    if [[ $OSTYPE == 'darwin'* ]]; then
+        NOW=$(($(date +%s)*1000))
+    else
+        NOW=$(($(date +%s%N)/1000000))
+    fi
     START=$NOW
     [[ -f /tmp/bearings.$$ ]] && START=$(cat /tmp/bearings.$$) && rm /tmp/bearings.$$
     DURATION=$(($NOW - $START));

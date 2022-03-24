@@ -40,13 +40,21 @@ If you'd like to install bearings to a shell other than the one you're using, yo
 ```zsh
 #bearings-auto:start
 function preexec() {
-  btimer=$(($(date +%s%0N)/1000000))
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    btimer=$(($(date +%s)*1000))
+  else
+    btimer=$(($(date +%s%N)/1000000))
+  fi
 }
 function configure_bearings() {
     last=$?
     elapsed=0
     if [ $btimer ]; then
-      now=$(($(date +%s%0N)/1000000))
+      if [[ $OSTYPE == 'darwin'* ]]; then
+        now=$(($(date +%s)*1000))
+      else
+        now=$(($(date +%s%N)/1000000))
+      fi
       elapsed=$(($now-$btimer))
       unset btimer
     fi
@@ -60,9 +68,17 @@ function configure_bearings() {
 
 ```bash
 #bearings-auto:start
-PS0='$(echo "$(($(date +%s%N)/1000000))" > /tmp/bearings.$$)';
+if [[ $OSTYPE == 'darwin'* ]]; then
+    PS0='$(echo "$(($(date +%s)*1000))" > /tmp/bearings.$$)';
+else
+    PS0='$(echo "$(($(date +%s%N)/1000000))" > /tmp/bearings.$$)';
+fi
 bearings_prompt() { 
-    NOW=$(($(date +%s%N)/1000000))
+    if [[ $OSTYPE == 'darwin'* ]]; then
+        NOW=$(($(date +%s)*1000))
+    else
+        NOW=$(($(date +%s%N)/1000000))
+    fi
     START=$NOW
     [[ -f /tmp/bearings.$$ ]] && START=$(cat /tmp/bearings.$$) && rm /tmp/bearings.$$
     DURATION=$(($NOW - $START));
