@@ -57,10 +57,10 @@ func (e *gitModule) Render(w *powerline.Writer) bool {
 
 	if clean {
 		baseStyle.Foreground = e.mc.Fg("clean_fg", baseStyle.Foreground.String())
-		baseStyle.Background = e.mc.Fg("clean_bg", baseStyle.Background.String())
+		baseStyle.Background = e.mc.Bg("clean_bg", baseStyle.Background.String())
 	} else {
 		baseStyle.Foreground = e.mc.Fg("dirty_fg", baseStyle.Foreground.String())
-		baseStyle.Background = e.mc.Fg("dirty_bg", baseStyle.Background.String())
+		baseStyle.Background = e.mc.Bg("dirty_bg", baseStyle.Background.String())
 	}
 
 	w.Printf(
