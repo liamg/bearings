@@ -25,8 +25,8 @@ type icon struct {
 
 var languageIcons = map[string]icon{
 	"go.mod":       {"go", "ﳑ", "lightblue"},
-	"Dockerfile":   {"docker", " ", "blue"},
-	"package.json": {"npm", "", "yellow"},
+	"Dockerfile":   {"docker", "", "blue"},
+	"package.json": {"node", "", "green"},
 	"build.gradle": {"gradle", "", "green"},
 	"pom.xml":      {"pom", "", "blue"},
 	"Gemfile":      {"ruby", "", "red"},
